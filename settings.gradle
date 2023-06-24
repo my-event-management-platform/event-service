@@ -1,1 +1,4 @@
 rootProject.name = 'event-service'
+
+include ':shared'
+project(':shared').projectDir = new File('../shared')
