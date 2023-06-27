@@ -1,22 +1,32 @@
 package com.eventmanagement.eventservice.controller;
 
-import com.eventmanagement.shared.dto.request.CreateEventDTO;
+import com.eventmanagement.eventservice.service.EventService;
+import com.eventmanagement.shared.dto.request.EventDTO;
 import com.eventmanagement.shared.dto.response.EventResponseDTO;
 import com.eventmanagement.shared.dto.response.MessageDTO;
 import com.eventmanagement.shared.dto.response.PageEventsResponseDTO;
+import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 
 
 @RestController
 @RequestMapping("/api/events")
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Validated
 public class EventController {
+    private final EventService eventService;
     @PostMapping
-    public ResponseEntity<MessageDTO> createEvent(@Valid @RequestBody CreateEventDTO createEventDTO) {
+    public ResponseEntity<MessageDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
+        EventSubmitted eventSubmitted = new EventSubmitted(eventDTO);
+        eventService.sendKafkaEvent(eventSubmitted);
         return new ResponseEntity<>(new MessageDTO("Event submitted for moderation"), HttpStatus.CREATED);
     }
 
@@ -40,8 +50,13 @@ public class EventController {
 
     @PatchMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> editEvent(@PathVariable("event_id") String eventId,
-                                                      @RequestBody CreateEventDTO createEventDTO) {
+                                                      @RequestBody EventDTO eventDTO) {
         return new ResponseEntity<>(new EventResponseDTO(), HttpStatus.OK);
+    }
+
+    @PostMapping("/ping")
+    public ResponseEntity<Void> ping() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
