@@ -16,4 +16,5 @@ public class Event {
     private String location;
     private Instant datetime;
     private Integer capacity;
+    private boolean reviewed;
 }

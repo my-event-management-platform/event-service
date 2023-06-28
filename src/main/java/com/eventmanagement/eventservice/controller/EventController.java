@@ -1,5 +1,7 @@
 package com.eventmanagement.eventservice.controller;
 
+import com.eventmanagement.eventservice.mapper.EventMapper;
+import com.eventmanagement.eventservice.model.Event;
 import com.eventmanagement.eventservice.service.EventService;
 import com.eventmanagement.shared.dto.request.EventDTO;
 import com.eventmanagement.shared.dto.response.EventResponseDTO;
@@ -23,10 +25,11 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class EventController {
     private final EventService eventService;
+    private final EventMapper eventMapper;
     @PostMapping
     public ResponseEntity<MessageDTO> createEvent(@Valid @RequestBody EventDTO eventDTO) {
-        EventSubmitted eventSubmitted = new EventSubmitted(eventDTO);
-        eventService.sendKafkaEvent(eventSubmitted);
+        Event event = eventMapper.toEvent(eventDTO);
+        eventService.submitEvent(event);
         return new ResponseEntity<>(new MessageDTO("Event submitted for moderation"), HttpStatus.CREATED);
     }
 
