@@ -49,7 +49,10 @@ public class EventController {
     @PatchMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> editEvent(@PathVariable("event_id") String eventId,
                                                       @RequestBody EventDTO eventDTO) {
-        return new ResponseEntity<>(new EventResponseDTO(), HttpStatus.OK);
+        Event newEvent = eventMapper.toEvent(eventDTO);
+        Event modifiedEvent = eventService.updateEvent(eventId, newEvent);
+        EventResponseDTO eventResponseDTO = eventMapper.toEventResponseDTO(modifiedEvent);
+        return new ResponseEntity<>(eventResponseDTO, HttpStatus.OK);
     }
 
     @PostMapping("/ping")

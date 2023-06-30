@@ -9,6 +9,10 @@ import com.eventmanagement.shared.kafkaEvents.event.EventReviewed;
 import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
 import com.eventmanagement.shared.types.ReviewDecision;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -60,6 +64,16 @@ public class EventService {
                 .orElseThrow(() -> new EventNotFoundException("Event with id " + eventId + " is not found"));
         event.setReviewed(true);
         eventRepository.save(event);
+    }
+
+    public Event updateEvent(String eventId, Event newEvent) {
+        Event modifiedEvent = getReviewedEventById(eventId);
+        ModelMapper modelMapper = new ModelMapper();
+        TypeMap<Event, Event> typeMap = modelMapper.createTypeMap(Event.class, Event.class);
+        typeMap.addMappings(mapping -> mapping.skip(Event::setReviewed));
+        modelMapper.map(newEvent, modifiedEvent);
+        eventRepository.save(modifiedEvent);
+        return modifiedEvent;
     }
 
     @KafkaListener(topics = "event-reviewed-kafka-events", groupId = "myGroup")
