@@ -6,10 +6,7 @@ import com.eventmanagement.eventservice.service.EventService;
 import com.eventmanagement.shared.dto.request.EventDTO;
 import com.eventmanagement.shared.dto.response.EventResponseDTO;
 import com.eventmanagement.shared.dto.response.MessageDTO;
-import com.eventmanagement.shared.dto.response.PageEventsResponseDTO;
-import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,7 +43,7 @@ public class EventController {
         return new ResponseEntity<>(new MessageDTO("Event deleted"), HttpStatus.OK);
     }
 
-    @PatchMapping("/{event_id}")
+    @PutMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> editEvent(@PathVariable("event_id") String eventId,
                                                       @RequestBody EventDTO eventDTO) {
         Event newEvent = eventMapper.toEvent(eventDTO);
