@@ -6,6 +6,7 @@ import com.eventmanagement.eventservice.repository.EventRepository;
 import com.eventmanagement.eventservice.exception.EventNotFoundException;
 import com.eventmanagement.shared.kafkaEvents.KafkaEvent;
 import com.eventmanagement.shared.kafkaEvents.event.EventChanged;
+import com.eventmanagement.shared.kafkaEvents.event.EventDeleted;
 import com.eventmanagement.shared.kafkaEvents.event.EventReviewed;
 import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
 import com.eventmanagement.shared.types.ReviewDecision;
@@ -57,6 +58,8 @@ public class EventService {
     public void deleteEvent(String eventId) {
         Event event = getReviewedEventById(eventId);
         eventRepository.deleteById(event.getId());
+        EventDeleted eventDeleted = new EventDeleted(event.getId());
+        sendKafkaEvent(eventDeleted);
     }
 
     private void markEventAsReviewed(String eventId) {
