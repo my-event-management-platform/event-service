@@ -73,9 +73,11 @@ public class EventService {
     public Event updateEvent(String eventId, Event newEvent) {
         Event modifiedEvent = getReviewedEventById(eventId);
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
         TypeMap<Event, Event> typeMap = modelMapper.createTypeMap(Event.class, Event.class);
         typeMap.addMappings(mapping -> mapping.skip(Event::setReviewed));
         modelMapper.map(newEvent, modifiedEvent);
+        System.out.println(modifiedEvent.getId());
         eventRepository.save(modifiedEvent);
         EventChanged eventChanged = kafkaEventMapper.toEventChanged(modifiedEvent);
         sendKafkaEvent(eventChanged);
