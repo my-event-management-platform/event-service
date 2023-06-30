@@ -17,4 +17,5 @@ public class Event {
     private Instant datetime;
     private Integer capacity;
     private boolean reviewed;
+    private String userId;
 }

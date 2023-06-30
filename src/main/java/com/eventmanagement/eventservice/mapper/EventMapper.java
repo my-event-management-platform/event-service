@@ -13,5 +13,6 @@ public abstract class EventMapper {
     @BeforeMapping
     protected void enrichEvent(@MappingTarget Event event) {
         event.setReviewed(false);
+        event.setUserId("devUserId"); // Temporary ID. Will be extracted from Security Context later
     }
 }
