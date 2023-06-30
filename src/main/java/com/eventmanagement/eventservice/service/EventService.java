@@ -5,6 +5,7 @@ import com.eventmanagement.eventservice.model.Event;
 import com.eventmanagement.eventservice.repository.EventRepository;
 import com.eventmanagement.eventservice.exception.EventNotFoundException;
 import com.eventmanagement.shared.kafkaEvents.KafkaEvent;
+import com.eventmanagement.shared.kafkaEvents.event.EventChanged;
 import com.eventmanagement.shared.kafkaEvents.event.EventReviewed;
 import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
 import com.eventmanagement.shared.types.ReviewDecision;
@@ -73,6 +74,8 @@ public class EventService {
         typeMap.addMappings(mapping -> mapping.skip(Event::setReviewed));
         modelMapper.map(newEvent, modifiedEvent);
         eventRepository.save(modifiedEvent);
+        EventChanged eventChanged = kafkaEventMapper.toEventChanged(modifiedEvent);
+        sendKafkaEvent(eventChanged);
         return modifiedEvent;
     }
 
