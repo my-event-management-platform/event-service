@@ -49,6 +49,11 @@ public class EventService {
         return event;
     }
 
+    public void deleteEvent(String eventId) {
+        Event event = getReviewedEventById(eventId);
+        eventRepository.deleteById(event.getId());
+    }
+
     private void markEventAsReviewed(String eventId) {
         Event event = eventRepository
                 .findById(eventId)
