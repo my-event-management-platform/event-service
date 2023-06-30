@@ -33,13 +33,6 @@ public class EventController {
         return new ResponseEntity<>(new MessageDTO("Event submitted for moderation"), HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<PageEventsResponseDTO> getEvents(@RequestParam(required = false, defaultValue = "0") @Min(0) int page,
-                                                           @RequestParam(required = false, defaultValue = "10") @Min(0) int size) {
-        PageEventsResponseDTO pageEventsResponseDTO = new PageEventsResponseDTO(); // TBD
-        return new ResponseEntity<>(pageEventsResponseDTO, HttpStatus.OK);
-    }
-
     @GetMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable("event_id") String eventId) {
         Event event = eventService.getReviewedEventById(eventId);
