@@ -42,7 +42,8 @@ public class EventController {
 
     @GetMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable("event_id") String eventId) {
-        EventResponseDTO eventResponseDTO = new EventResponseDTO();
+        Event event = eventService.getReviewedEventById(eventId);
+        EventResponseDTO eventResponseDTO = eventMapper.toEventResponseDTO(event);
         return new ResponseEntity<>(eventResponseDTO, HttpStatus.OK);
     }
 

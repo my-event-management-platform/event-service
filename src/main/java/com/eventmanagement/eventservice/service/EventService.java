@@ -42,6 +42,13 @@ public class EventService {
         eventRepository.insert(event);
     }
 
+    public Event getReviewedEventById(String eventId) {
+        Event event = eventRepository
+                .findByIdAndReviewedIsTrue(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event with id " + eventId + " is not found"));
+        return event;
+    }
+
     private void markEventAsReviewed(String eventId) {
         Event event = eventRepository
                 .findById(eventId)
