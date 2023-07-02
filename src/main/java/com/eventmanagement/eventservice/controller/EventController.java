@@ -32,14 +32,14 @@ public class EventController {
 
     @GetMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> getEvent(@PathVariable("event_id") String eventId) {
-        Event event = eventService.getReviewedEventById(eventId);
+        Event event = eventService.getEventById(eventId, false);
         EventResponseDTO eventResponseDTO = eventMapper.toEventResponseDTO(event);
         return new ResponseEntity<>(eventResponseDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{event_id}")
     public ResponseEntity<MessageDTO> deleteEvent(@PathVariable("event_id") String eventId) {
-        eventService.deleteEvent(eventId);
+        eventService.deleteEvent(eventId, false);
         return new ResponseEntity<>(new MessageDTO("Event deleted"), HttpStatus.OK);
     }
 
