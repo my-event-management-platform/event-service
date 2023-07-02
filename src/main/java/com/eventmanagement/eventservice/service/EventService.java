@@ -22,6 +22,7 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.messaging.Message;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -44,10 +45,12 @@ public class EventService {
         kafkaTemplate.send(message);
     }
 
-    private void storeUnreviewedEvent(Event event) {
+    @Transactional
+    protected void storeUnreviewedEvent(Event event) {
         eventRepository.insert(event);
     }
 
+    @Transactional(readOnly = true)
     public Event getReviewedEventById(String eventId) {
         Event event = eventRepository
                 .findByIdAndReviewedIsTrue(eventId)
@@ -55,6 +58,7 @@ public class EventService {
         return event;
     }
 
+    @Transactional
     public void deleteEvent(String eventId) {
         Event event = getReviewedEventById(eventId);
         eventRepository.deleteById(event.getId());
@@ -62,7 +66,8 @@ public class EventService {
         sendKafkaEvent(eventDeleted);
     }
 
-    private void markEventAsReviewed(String eventId) {
+    @Transactional
+    protected void markEventAsReviewed(String eventId) {
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event with id " + eventId + " is not found"));
@@ -70,6 +75,7 @@ public class EventService {
         eventRepository.save(event);
     }
 
+     @Transactional
     public Event updateEvent(String eventId, Event newEvent) {
         Event modifiedEvent = getReviewedEventById(eventId);
         ModelMapper modelMapper = new ModelMapper();
