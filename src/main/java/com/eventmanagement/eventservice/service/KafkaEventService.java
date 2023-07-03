@@ -10,6 +10,7 @@ import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
 import com.eventmanagement.shared.types.ReviewDecision;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -18,11 +19,19 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class KafkaEventService {
     private final KafkaTemplate<String, KafkaEvent> kafkaTemplate;
     private final KafkaEventMapper kafkaEventMapper;
     private final EventService eventService;
+
+    @Autowired
+    public KafkaEventService(KafkaTemplate<String, KafkaEvent> kafkaTemplate,
+                             KafkaEventMapper kafkaEventMapper,
+                             @Lazy EventService eventService) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.kafkaEventMapper = kafkaEventMapper;
+        this.eventService = eventService;
+    }
 
     public void processSubmitEvent(Event event) {
         EventSubmitted eventSubmitted = kafkaEventMapper.toEventSubmitted(event);
