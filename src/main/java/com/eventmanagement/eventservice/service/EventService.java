@@ -59,7 +59,7 @@ public class EventService {
         eventRepository.save(event);
     }
 
-     @Transactional
+    @Transactional
     public Event updateEvent(String eventId, Event newEvent) {
         Event modifiedEvent = getEventById(eventId, false);
         ModelMapper modelMapper = new ModelMapper();
