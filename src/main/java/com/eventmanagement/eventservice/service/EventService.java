@@ -2,7 +2,7 @@ package com.eventmanagement.eventservice.service;
 
 import com.eventmanagement.eventservice.model.Event;
 import com.eventmanagement.eventservice.repository.EventRepository;
-import com.eventmanagement.eventservice.exception.EventNotFoundException;
+import com.eventmanagement.shared.exceptions.EventNotFoundException;
 import com.eventmanagement.shared.kafkaEvents.event.EventChanged;
 import com.eventmanagement.shared.kafkaEvents.event.EventDeleted;
 import lombok.RequiredArgsConstructor;
