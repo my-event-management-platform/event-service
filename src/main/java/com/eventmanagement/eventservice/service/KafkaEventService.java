@@ -56,7 +56,7 @@ public class KafkaEventService {
         kafkaTemplate.send(message);
     }
 
-    @KafkaListener(topics = "event-reviewed-kafka-events", groupId = "myGroup")
+    @KafkaListener(topics = "event-reviewed-kafka-events")
     private void consumeEventReviewed(EventReviewed eventReviewed) {
         if (eventReviewed.getReviewDecision() == ReviewDecision.APPROVE) {
             eventService.markEventAsReviewed(eventReviewed.getEventId());
