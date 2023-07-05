@@ -39,7 +39,7 @@ public class EventController {
 
     @DeleteMapping("/{event_id}")
     public ResponseEntity<MessageDTO> deleteEvent(@PathVariable("event_id") String eventId) {
-        eventService.deleteEvent(eventId, false);
+        eventService.deleteEvent(eventId, false, true);
         return new ResponseEntity<>(new MessageDTO("Event deleted"), HttpStatus.OK);
     }
 

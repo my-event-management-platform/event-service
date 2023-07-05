@@ -61,7 +61,7 @@ public class KafkaEventService {
         if (eventReviewed.getReviewDecision() == ReviewDecision.APPROVE) {
             eventService.markEventAsReviewed(eventReviewed.getEventId());
         } else {
-            eventService.deleteEvent(eventReviewed.getEventId(), true);
+            eventService.deleteEvent(eventReviewed.getEventId(), true, false);
         }
     }
 }

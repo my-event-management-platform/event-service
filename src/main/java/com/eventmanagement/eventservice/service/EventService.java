@@ -44,7 +44,7 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(String eventId, boolean allowUnreviewed) {
+    public void deleteEvent(String eventId, boolean allowUnreviewed, boolean produceKafkaEvent) {
         Event event = getEventById(eventId, allowUnreviewed);
         eventRepository.deleteById(event.getId());
         kafkaEventService.processDeleteEvent(event);
