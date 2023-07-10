@@ -3,10 +3,7 @@ package com.eventmanagement.eventservice.service;
 import com.eventmanagement.eventservice.mapper.KafkaEventMapper;
 import com.eventmanagement.eventservice.model.Event;
 import com.eventmanagement.shared.kafkaEvents.KafkaEvent;
-import com.eventmanagement.shared.kafkaEvents.event.EventChanged;
-import com.eventmanagement.shared.kafkaEvents.event.EventDeleted;
-import com.eventmanagement.shared.kafkaEvents.event.EventReviewed;
-import com.eventmanagement.shared.kafkaEvents.event.EventSubmitted;
+import com.eventmanagement.shared.kafkaEvents.event.*;
 import com.eventmanagement.shared.types.ReviewDecision;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,11 @@ public class KafkaEventService {
         sendKafkaEvent(eventChanged);
     }
 
+    public void processPublishEvent(Event event) {
+        EventPublished eventPublished = kafkaEventMapper.toEventPublished(event);
+        sendKafkaEvent(eventPublished);
+    }
+
     private void sendKafkaEvent(KafkaEvent kafkaEvent) {
         Message<KafkaEvent> message = MessageBuilder
                 .withPayload(kafkaEvent)
@@ -59,7 +61,7 @@ public class KafkaEventService {
     @KafkaListener(topics = "event-reviewed-kafka-events")
     private void consumeEventReviewed(EventReviewed eventReviewed) {
         if (eventReviewed.getReviewDecision() == ReviewDecision.APPROVE) {
-            eventService.markEventAsReviewed(eventReviewed.getEventId());
+            eventService.markEventAsReviewed(eventReviewed.getEventId(), true);
         } else {
             eventService.deleteEvent(eventReviewed.getEventId(), true, false);
         }

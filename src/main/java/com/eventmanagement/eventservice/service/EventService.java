@@ -51,12 +51,15 @@ public class EventService {
     }
 
     @Transactional
-    public void markEventAsReviewed(String eventId) {
+    public void markEventAsReviewed(String eventId, boolean produceKafkaEvent) {
         Event event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event with id " + eventId + " is not found"));
         event.setReviewed(true);
         eventRepository.save(event);
+        if (produceKafkaEvent) {
+            kafkaEventService.processPublishEvent(event);
+        }
     }
 
     @Transactional
