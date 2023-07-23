@@ -3,6 +3,7 @@ package com.eventmanagement.eventservice.controller;
 import com.eventmanagement.eventservice.mapper.EventMapper;
 import com.eventmanagement.eventservice.model.Event;
 import com.eventmanagement.eventservice.service.EventService;
+import com.eventmanagement.shared.dto.request.ChangeEventDTO;
 import com.eventmanagement.shared.dto.request.EventDTO;
 import com.eventmanagement.shared.dto.response.EventResponseDTO;
 import com.eventmanagement.shared.dto.response.MessageDTO;
@@ -43,11 +44,11 @@ public class EventController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{event_id}")
+    @PatchMapping("/{event_id}")
     public ResponseEntity<EventResponseDTO> editEvent(@PathVariable("event_id") String eventId,
-                                                      @RequestBody EventDTO eventDTO) {
-        Event newEvent = eventMapper.toEvent(eventDTO);
-        Event modifiedEvent = eventService.updateEvent(eventId, newEvent);
+                                                      @RequestBody ChangeEventDTO changeEventDTO) {
+        Event newEventData = eventMapper.toEvent(changeEventDTO);
+        Event modifiedEvent = eventService.updateEvent(eventId, newEventData);
         EventResponseDTO eventResponseDTO = eventMapper.toEventResponseDTO(modifiedEvent);
         return new ResponseEntity<>(eventResponseDTO, HttpStatus.OK);
     }

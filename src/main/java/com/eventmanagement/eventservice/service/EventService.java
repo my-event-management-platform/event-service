@@ -65,11 +65,11 @@ public class EventService {
     @Transactional
     public Event updateEvent(String eventId, Event newEvent) {
         Event modifiedEvent = getEventById(eventId, false);
+        // Define mapper
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
-        TypeMap<Event, Event> typeMap = modelMapper.createTypeMap(Event.class, Event.class);
-        typeMap.addMappings(mapping -> mapping.skip(Event::setReviewed));
+        modelMapper.getConfiguration().setSkipNullEnabled(true); // Skip null
         modelMapper.map(newEvent, modifiedEvent);
+        // Save modified event data
         eventRepository.save(modifiedEvent);
         kafkaEventService.processUpdateEvent(modifiedEvent);
         return modifiedEvent;
